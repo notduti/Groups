@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d98ae079-0265-45c6-9f77-d20103ed9bff" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+    <list default="true" id="d98ae079-0265-45c6-9f77-d20103ed9bff" name="Changes" comment="Added working combo box">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FrmGroups.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FrmGroups.java" afterDir="false" />
     </list>
@@ -49,6 +48,18 @@
       <option name="presentableId" value="Default" />
       <updated>1678900098211</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added working combo box">
+      <created>1678973669062</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678973669062</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added working combo box" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added working combo box" />
   </component>
 </project>

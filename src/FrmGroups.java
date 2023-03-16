@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.util.Collections.shuffle;
@@ -43,13 +47,20 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
     private void populate() {
 
         if(this.list == null) return;
-        int groups = 1;
+        int groups = 1, i = 0;
+        this.txtFile.append("Group 1\n");
         for(Student student: this.list) {
 
-            this.txtFile.append("Group: " + groups + "\n");
-            for(int i = 0; i < this.sizeOfGroups; i++)
-                this.txtFile.append(student.toString() + "\n");
-            groups++;
+            System.out.println(i + " == " + this.sizeOfGroups);
+            if(i == this.sizeOfGroups) {
+                groups++;
+                this.txtFile.append("Group " + groups + "\n");
+                i = 0;
+            }
+            else {
+                this.txtFile.append(student.showOnGUI() + "\n");
+               i++;
+            }
         }
     }
 
@@ -82,6 +93,12 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         mnuFile.add(this.mniExit);
 
         mnbNorth.add(mnuFile);
+
+        this.mniOpen.addActionListener(this);
+        this.mniSave.addActionListener(this);
+        this.mniSaveNew.addActionListener(this);
+        this.mniExit.addActionListener(this);
+
 
         JMenu mnuHelp = new JMenu("Help");
 
@@ -128,12 +145,54 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         this.add(pnlSouth, BorderLayout.SOUTH);
     }
 
+    private void populateStudents() {
+
+        this.list = new ArrayList<>();
+        this.sizeOfGroups = 0;
+        try {
+
+            BufferedReader br = new BufferedReader(new FileReader(this.filename));
+            String line = null;
+            int group = 1;
+            while((line = br.readLine()) != null) {
+
+                String[] els = line.split(" ");
+                if(els[0].compareTo("Group") != 0)
+                    this.list.add(new Student(els[0], els[1], group));
+                else {
+                    group = Integer.parseInt(els[1]);
+                    this.sizeOfGroups++;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
         if(e.getSource() == this.btnShuffle) {
             shuffle();
         }
+        if(e.getSource() == this.mniOpen) {
+            openFile();
+        }
+    }
+
+    private void openFile() {
+
+        JFileChooser fc = new JFileChooser();
+        int rc = fc.showOpenDialog(this);
+        if(rc != JFileChooser.APPROVE_OPTION) return;
+        this.filename = fc.getSelectedFile().getAbsolutePath();
+        populateStudents();
+        System.out.println(this.list);
+        populate();
     }
 
     @Override
