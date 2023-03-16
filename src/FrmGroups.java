@@ -6,11 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static java.util.Collections.shuffle;
 
@@ -46,20 +44,28 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
 
     private void populate() {
 
+        this.txtFile.setText("");
         if(this.list == null) return;
+
+        if(this.sizeOfGroups == 0) {
+
+            for(Student student: this.list) this.txtFile.append(student.showOnGUI() + "\n");
+            return;
+        }
+
         int groups = 1, i = 0;
         this.txtFile.append("Group 1\n");
         for(Student student: this.list) {
 
-            System.out.println(i + " == " + this.sizeOfGroups);
+            //System.out.println(i + " == " + this.sizeOfGroups);
             if(i == this.sizeOfGroups) {
                 groups++;
                 this.txtFile.append("Group " + groups + "\n");
                 i = 0;
             }
             else {
-                this.txtFile.append(student.showOnGUI() + "\n");
-               i++;
+                this.txtFile.append("    " + student.showOnGUI() + "\n");
+                i++;
             }
         }
     }
@@ -143,6 +149,8 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         this.btnShuffle = new JButton("SHUFFLE");
         pnlSouth.add(this.btnShuffle);
         this.add(pnlSouth, BorderLayout.SOUTH);
+
+        this.btnShuffle.addActionListener(this);
     }
 
     private void populateStudents() {
@@ -176,12 +184,11 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource() == this.btnShuffle) {
-            shuffle();
-        }
-        if(e.getSource() == this.mniOpen) {
-            openFile();
-        }
+        if(e.getSource() == this.btnShuffle) shuffle();
+        if(e.getSource() == this.mniOpen) openFile();
+        if(e.getSource() == this.mniSaveNew) saveNewFile();
+        if(e.getSource() == this.mniSave) saveFile();
+        if(e.getSource() == this.mniExit) exitApp();
     }
 
     private void openFile() {
@@ -193,6 +200,32 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         populateStudents();
         System.out.println(this.list);
         populate();
+    }
+
+    private void saveNewFile() {
+
+        JFileChooser fc = new JFileChooser();
+        int rc = fc.showOpenDialog(this);
+        if(rc != JFileChooser.APPROVE_OPTION) return;
+        this.filename = fc.getSelectedFile().getAbsolutePath();
+        saveFile();
+    }
+
+    private void saveFile() {
+
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(this.filename));
+            pw.print(txtFile.getText());
+            pw.close();
+            modified = false;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void exitApp() {
+
+
     }
 
     @Override
@@ -222,6 +255,8 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
     }
 
     private void shuffle() {
+        Collections.shuffle(this.list);
+        populate();
     }
 
 
