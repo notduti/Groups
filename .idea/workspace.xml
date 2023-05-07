@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d98ae079-0265-45c6-9f77-d20103ed9bff" name="Changes" comment="Populate while implementing menu &quot;Open&quot;">
+    <list default="true" id="d98ae079-0265-45c6-9f77-d20103ed9bff" name="Changes" comment="Adding Student.java on the repo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FrmGroups.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FrmGroups.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Student.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

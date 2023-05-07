@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,7 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
     private JMenuItem mniDocumentation = null;
     private JMenuItem mniContactUs = null;
     private JComboBox cmbSize = null;
-    private JTextArea txtFile = null;
+    private JTable tblFile = null;
     private JButton btnShuffle = null;
 
     public FrmGroups() {
@@ -40,34 +41,6 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         populate();
 
         setVisible(true);
-    }
-
-    private void populate() {
-
-        this.txtFile.setText("");
-        if(this.list == null) return;
-
-        if(this.sizeOfGroups == 0) {
-
-            for(Student student: this.list) this.txtFile.append(student.showOnGUI() + "\n");
-            return;
-        }
-
-        int groups = 1, i = 0;
-        this.txtFile.append("Group 1\n");
-        for(Student student: this.list) {
-
-            //System.out.println(i + " == " + this.sizeOfGroups);
-            if(i == this.sizeOfGroups) {
-                groups++;
-                this.txtFile.append("Group " + groups + "\n");
-                i = 0;
-            }
-            else {
-                this.txtFile.append("    " + student.showOnGUI() + "\n");
-                i++;
-            }
-        }
     }
 
     private void initUI() {
@@ -138,8 +111,8 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
 
     private void panelCenter() {
 
-        this.txtFile = new JTextArea();
-        JScrollPane sp = new JScrollPane(this.txtFile);
+        this.tblFile = new JTable();
+        JScrollPane sp = new JScrollPane(this.tblFile);
         this.add(sp, BorderLayout.CENTER);
     }
 
@@ -151,6 +124,18 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
         this.add(pnlSouth, BorderLayout.SOUTH);
 
         this.btnShuffle.addActionListener(this);
+    }
+
+    private void populate() {
+
+        if(this.list == null) return;
+
+        DefaultTableModel model = new DefaultTableModel();
+        String[] cols = {"Gruop", "Name", "Surname"};
+        for(String s: cols) model.addColumn(s);
+        for(Student student: this.list) model.addRow(student.toRow());
+
+        this.tblFile.setModel(model);
     }
 
     private void populateStudents() {
@@ -205,7 +190,7 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
     private void saveNewFile() {
 
         JFileChooser fc = new JFileChooser();
-        int rc = fc.showOpenDialog(this);
+        int rc = fc.showSaveDialog(this);
         if(rc != JFileChooser.APPROVE_OPTION) return;
         this.filename = fc.getSelectedFile().getAbsolutePath();
         saveFile();
@@ -215,7 +200,19 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
 
         try {
             PrintWriter pw = new PrintWriter(new FileWriter(this.filename));
-            pw.print(txtFile.getText());
+
+            String ret = "";
+            int group = 0, i = 0;
+            for(Student s: this.list) {
+                if((i % this.sizeOfGroups) == 0) {
+                    group++;
+                    ret = ret + "Group " + group + "\n";
+                }
+                i++;
+                ret = ret + "\t" + s.getName() + " " + s.getSurname() + "\n";
+            }
+
+            pw.print(ret);
             pw.close();
             modified = false;
         } catch (IOException e) {
@@ -256,6 +253,12 @@ public class FrmGroups extends JFrame implements ActionListener, DocumentListene
 
     private void shuffle() {
         Collections.shuffle(this.list);
+
+        int group = 0;
+        for(int i = 0; i < this.list.size(); i++) {
+            if((i % this.sizeOfGroups) == 0) group++;
+            this.list.get(i).setGroup(group);
+        }
         populate();
     }
 

@@ -46,4 +46,13 @@ public class Student {
     public String showOnGUI() {
         return name +  " " + surname;
     }
+
+    public String[] toRow() {
+
+        String[] ret = new String[3];
+        ret[0] = this.group + "";
+        ret[1] = this.name;
+        ret[2] = this.surname;
+        return ret;
+    }
 }
